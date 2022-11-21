@@ -1,6 +1,11 @@
 package payroll;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+
 import java.util.List;
+import org.springframework.hateoas.EntityModel;
+// import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+// import org.springframework.hateoas.EntityModel;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,23 +39,18 @@ class EmployeeController {
 
   // Single item
 
-  // @GetMapping("/employees/{id}")
-  // Employee one(@PathVariable Long id) {
-
-  //     return repository.findById(id)
-  //             .orElseThrow(() -> new EmployeeNotFoundException(id));
-  // }
-
+  // Actually RESTful ver.
+  // Generates links to self and collection, which the client can use in followup logic
   @GetMapping("/employees/{id}")
   EntityModel<Employee> one(@PathVariable Long id) {
     Employee employee = repository
-      .findById(id) //
+      .findById(id)
       .orElseThrow(() -> new EmployeeNotFoundException(id));
 
     return EntityModel.of(
-      employee, //
+      employee,
       linkTo(methodOn(EmployeeController.class).one(id)).withSelfRel(),
-      linkTo(methodOn(EmployeeController.class).all()).withRel("employees")
+      linkTo(methodOn(EmployeeController.class).all()).withRel("Employees")
     );
   }
 
